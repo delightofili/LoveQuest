@@ -16,35 +16,39 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const firstMemory = experience.story?.[0];
-
   return {
-    title: experience.title,
+    title: `For ${experience.recipientName} ❤️`,
 
-    description: `A special LoveQuest created by ${experience.senderName} for ${experience.recipientName}.`,
+    description: experience.title,
 
     openGraph: {
-      title: experience.title,
+      title: `For ${experience.recipientName} ❤️`,
 
-      description: `A special LoveQuest created by ${experience.senderName}.`,
+      description: experience.title,
 
-      images: firstMemory?.image
-        ? [
-            {
-              url: firstMemory.image,
-            },
-          ]
-        : [],
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
 
-      title: experience.title,
+      title: `For ${experience.recipientName}`,
 
-      description: `A special LoveQuest.`,
+      description: experience.title,
 
-      images: firstMemory?.image ? [firstMemory.image] : [],
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
   };
 }

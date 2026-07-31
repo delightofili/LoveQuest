@@ -1,3 +1,4 @@
+import SplashScreen from "@/components/SplashScreen";
 import "./globals.css";
 import { Poppins } from "next/font/google";
 
@@ -9,36 +10,54 @@ const poppins = Poppins({
 export const metadata = {
   title: {
     default: "LoveQuest",
-
     template: "%s | LoveQuest",
   },
 
   description:
-    "Create beautiful interactive love stories for the people you love.",
+    "Create unforgettable interactive love experiences with memories, photos, music and surprises.",
 
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ),
+  metadataBase: new URL("https://loveequest.vercel.app"),
 
   openGraph: {
     title: "LoveQuest",
 
-    description: "Create unforgettable interactive love stories.",
+    description: "Create unforgettable interactive love experiences.",
+
+    url: "https://loveequest.vercel.app",
 
     siteName: "LoveQuest",
+
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+
+    locale: "en_US",
 
     type: "website",
   },
 
   twitter: {
     card: "summary_large_image",
+
+    title: "LoveQuest",
+
+    description: "Create unforgettable interactive love experiences.",
+
+    images: ["/og-image.png"],
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        <SplashScreen />
+        {children}
+      </body>
     </html>
   );
 }
