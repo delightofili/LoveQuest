@@ -1,4 +1,4 @@
-import CopyButton from "@/components/CopyButton";
+import CopyButton from "@/components/ui/CopyButton";
 import Link from "next/link";
 
 export default async function Published({ params }) {

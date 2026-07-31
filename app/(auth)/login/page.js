@@ -1,5 +1,4 @@
-import GradientBackground from "@/components/backgrounds/GradientBackground";
-import FloatingParticles from "@/components/backgrounds/FloatingParticles";
+import FloatingParticles from "@/components/Backgrounds/FloatingParticles";
 
 import LoginForm from "@/components/auth/LoginForm";
 

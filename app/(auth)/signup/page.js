@@ -1,5 +1,4 @@
-import GradientBackground from "@/components/backgrounds/GradientBackground";
-import FloatingParticles from "@/components/backgrounds/FloatingParticles";
+import FloatingParticles from "@/components/Backgrounds/FloatingParticles";
 
 import SignupForm from "@/components/auth/SignupForm";
 import { registerAction } from "@/app/actions/auth";
