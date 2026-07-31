@@ -1,7 +1,6 @@
 import FloatingParticles from "@/components/Backgrounds/FloatingParticles";
 
 import SignupForm from "@/components/auth/SignupForm";
-import { registerAction } from "@/app/actions/auth";
 
 export default async function SignupPage() {
   return (
