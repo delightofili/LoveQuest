@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useRef, useCallback } from "react";
 import EndingScreen from "./EndingScreen";
 
 export default function StoryPlayer({ experience }) {
-  const memories = experience.story;
+  const memories = Array.isArray(experience.story) ? experience.story : [];
 
   const [current, setCurrent] = useState(0);
 
-  const isFinished = current >= memories.length;
+  const isFinished = memories.length === 0 || current >= memories.length;
 
   const memory = memories[current];
 
@@ -24,21 +23,25 @@ export default function StoryPlayer({ experience }) {
   }, []);
 
   // Keyboard navigation
-
   useEffect(() => {
     function handleKey(e) {
-      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowRight") {
+        next();
+      }
 
-      if (e.key === "ArrowLeft") previous();
+      if (e.key === "ArrowLeft") {
+        previous();
+      }
     }
 
     window.addEventListener("keydown", handleKey);
 
-    return () => window.removeEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+    };
   }, [next, previous]);
 
-  // Swipe
-
+  // Swipe navigation
   const touchStart = useRef(0);
 
   function handleTouchStart(e) {
@@ -57,7 +60,10 @@ export default function StoryPlayer({ experience }) {
     }
   }
 
+  // Automatically move to next memory after 12 seconds
   useEffect(() => {
+    if (isFinished) return;
+
     const timer = setTimeout(() => {
       if (current < memories.length - 1) {
         next();
@@ -65,11 +71,32 @@ export default function StoryPlayer({ experience }) {
     }, 12000);
 
     return () => clearTimeout(timer);
-  }, [current, next, memories.length]);
+  }, [current, next, memories.length, isFinished]);
 
+  // No memories
+  if (memories.length === 0) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold">
+            This LoveQuest has no memories yet.
+          </h1>
+
+          <p className="mt-4 text-zinc-400">
+            Something went wrong while loading the memories.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // Finished
   if (isFinished) {
     return <EndingScreen onReplay={() => setCurrent(0)} />;
   }
+
+  // Safely get the image URL
+  const imageUrl = typeof memory?.image === "string" ? memory.image.trim() : "";
 
   return (
     <main
@@ -78,7 +105,6 @@ export default function StoryPlayer({ experience }) {
       className="relative min-h-screen overflow-hidden bg-black text-white"
     >
       {/* Progress */}
-
       <div className="fixed left-0 top-0 z-50 h-1 w-full bg-white/10">
         <motion.div
           key={current}
@@ -97,7 +123,6 @@ export default function StoryPlayer({ experience }) {
       </div>
 
       {/* Counter */}
-
       <div className="fixed right-6 top-6 z-50 rounded-full bg-black/40 px-5 py-2 backdrop-blur">
         {current + 1} / {memories.length}
       </div>
@@ -122,30 +147,44 @@ export default function StoryPlayer({ experience }) {
           }}
         >
           {/* IMAGE */}
+          <div className="relative h-[45vh] w-full overflow-hidden bg-zinc-950">
+            {imageUrl ? (
+              <motion.div
+                className="absolute inset-0"
+                animate={{
+                  scale: [1, 1.08],
+                }}
+                transition={{
+                  duration: 12,
+                  ease: "linear",
+                }}
+              >
+                <Image
+                  src={imageUrl}
+                  alt={memory.title || "LoveQuest memory"}
+                  fill
+                  priority={current === 0}
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </motion.div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-pink-950 via-black to-purple-950">
+                <div className="text-center">
+                  <div className="text-6xl">❤️</div>
 
-          <div className="relative h-[45vh] w-full overflow-hidden">
-            <motion.div
-              animate={{
-                scale: [1, 1.08],
-              }}
-              transition={{
-                duration: 12,
-              }}
-            >
-              <Image
-                src={memory.image}
-                alt={memory.title}
-                fill
-                priority
-                className="object-cover"
-              />
-            </motion.div>
+                  <p className="mt-4 text-sm text-zinc-400">
+                    Memory photo unavailable
+                  </p>
+                </div>
+              </div>
+            )}
 
+            {/* Image overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
           </div>
 
           {/* CONTENT */}
-
           <section className="mx-auto max-w-3xl px-6 py-10">
             <motion.h1
               initial={{
@@ -182,16 +221,17 @@ export default function StoryPlayer({ experience }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation */}
-
+      {/* Previous */}
       <button
         onClick={previous}
         disabled={current === 0}
-        className="fixed left-5 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-white/10 text-3xl backdrop-blur transition hover:bg-white/20 disabled:opacity-20"
+        aria-label="Previous memory"
+        className="fixed left-5 top-1/2 z-50 h-16 w-16 -translate-y-1/2 rounded-full bg-white/10 text-3xl backdrop-blur transition hover:bg-white/20 disabled:opacity-20"
       >
         ←
       </button>
 
+      {/* Next */}
       <button
         onClick={() => {
           if (current === memories.length - 1) {
@@ -200,8 +240,8 @@ export default function StoryPlayer({ experience }) {
             next();
           }
         }}
-        disabled={false}
-        className="fixed right-5 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-white/10 text-3xl backdrop-blur transition hover:bg-white/20 disabled:opacity-20"
+        aria-label="Next memory"
+        className="fixed right-5 top-1/2 z-50 h-16 w-16 -translate-y-1/2 rounded-full bg-white/10 text-3xl backdrop-blur transition hover:bg-white/20"
       >
         →
       </button>

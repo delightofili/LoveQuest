@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma";
 
 export default async function sitemap() {
@@ -7,7 +9,6 @@ export default async function sitemap() {
     where: {
       published: true,
     },
-
     select: {
       slug: true,
     },
@@ -16,19 +17,14 @@ export default async function sitemap() {
   return [
     {
       url: base,
-
       priority: 1,
     },
-
     {
       url: `${base}/explore`,
-
       priority: 0.9,
     },
-
     ...experiences.map((exp) => ({
       url: `${base}/q/${exp.slug}`,
-
       priority: 0.8,
     })),
   ];

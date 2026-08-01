@@ -1,25 +1,59 @@
 "use client";
 
-import { useState } from "react";
 import { Heart } from "lucide-react";
 
-// Helper to generate positions
-const generateHearts = () =>
-  Array.from({ length: 25 }).map(() => ({
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    animationDuration: `${4 + Math.random() * 5}s`,
-  }));
+const hearts = [
+  {
+    left: "8%",
+    top: "15%",
+    animationDuration: "7s",
+    animationDelay: "0s",
+  },
+  {
+    left: "22%",
+    top: "68%",
+    animationDuration: "9s",
+    animationDelay: "1s",
+  },
+  {
+    left: "38%",
+    top: "28%",
+    animationDuration: "8s",
+    animationDelay: "2s",
+  },
+  {
+    left: "54%",
+    top: "78%",
+    animationDuration: "10s",
+    animationDelay: "0.5s",
+  },
+  {
+    left: "71%",
+    top: "19%",
+    animationDuration: "7.5s",
+    animationDelay: "1.5s",
+  },
+  {
+    left: "86%",
+    top: "57%",
+    animationDuration: "9.5s",
+    animationDelay: "2.5s",
+  },
+  {
+    left: "14%",
+    top: "42%",
+    animationDuration: "8.5s",
+    animationDelay: "3s",
+  },
+  {
+    left: "63%",
+    top: "45%",
+    animationDuration: "11s",
+    animationDelay: "1s",
+  },
+];
 
 export default function FloatingHearts() {
-  // Pass a function to useState so it only executes on initial render
-  const [hearts] = useState(() => {
-    if (typeof window !== "undefined") {
-      return generateHearts();
-    }
-    return [];
-  });
-
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {hearts.map((style, i) => (

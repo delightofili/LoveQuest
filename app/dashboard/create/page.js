@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import StepSidebar from "@/components/dashboard/create/StepSidebar";
 import BasicStep from "@/components/dashboard/create/BasicStep";
 import MomentsStep from "@/components/dashboard/create/MomentsStep";
@@ -21,6 +22,27 @@ export default function CreatePage() {
   });
 
   function nextStep() {
+    // Step 2 = Memories
+    if (step === 2) {
+      // Make sure at least one memory exists
+      if (!form.story || form.story.length === 0) {
+        alert("Please add at least one memory before continuing.");
+        return;
+      }
+
+      // Make sure EVERY memory has an image
+      const missingImage = form.story.some(
+        (moment) => !moment.image || moment.image.trim() === "",
+      );
+
+      if (missingImage) {
+        alert(
+          "Every memory must have a photo. Please upload a photo for each memory before continuing.",
+        );
+        return;
+      }
+    }
+
     setStep((prev) => prev + 1);
   }
 
@@ -32,7 +54,7 @@ export default function CreatePage() {
     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 md:px-8 md:py-8 lg:flex-row lg:gap-8">
       <StepSidebar step={step} />
 
-      <section className="flex-1 rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-10 ">
+      <section className="flex-1 rounded-3xl border border-white/10 bg-white/[0.03] p-5 md:p-10">
         {step === 1 && (
           <BasicStep form={form} setForm={setForm} nextStep={nextStep} />
         )}
@@ -45,6 +67,7 @@ export default function CreatePage() {
             previousStep={previousStep}
           />
         )}
+
         {step === 3 && (
           <ThemeStep
             form={form}
@@ -53,6 +76,7 @@ export default function CreatePage() {
             previousStep={previousStep}
           />
         )}
+
         {step === 4 && (
           <PreviewStep
             form={form}

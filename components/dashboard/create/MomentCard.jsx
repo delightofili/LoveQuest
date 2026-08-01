@@ -1,24 +1,22 @@
 import { Trash2 } from "lucide-react";
-import Image from "next/image";
 import ImageUploader from "./ImageUploader";
 
 export default function MomentCard({
   moment,
-
   index,
-
   updateMoment,
-
   deleteMoment,
 }) {
   return (
     <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl md:text-2xl font-bold">Memory {index + 1}</h2>
+        <h2 className="text-xl font-bold md:text-2xl">Memory {index + 1}</h2>
 
         <button
+          type="button"
           onClick={() => {
             const ok = confirm("Delete this memory?");
+
             if (ok) {
               deleteMoment(moment.id);
             }
@@ -30,48 +28,53 @@ export default function MomentCard({
       </div>
 
       <div className="space-y-6">
-        <input
-          value={moment.title}
-          onChange={(e) =>
-            updateMoment(
-              moment.id,
+        {/* TITLE */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-zinc-300">
+            Memory Title
+          </label>
 
-              "title",
+          <input
+            value={moment.title || ""}
+            onChange={(e) => updateMoment(moment.id, "title", e.target.value)}
+            placeholder="First Day We Met"
+            className="h-14 w-full rounded-xl border border-white/10 bg-white/5 px-5"
+          />
+        </div>
 
-              e.target.value,
-            )
-          }
-          placeholder="First Day We Met"
-          className="h-14 w-full rounded-xl border border-white/10 bg-white/5 px-5"
-        />
+        {/* STORY */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-zinc-300">
+            Your Story
+          </label>
 
-        <textarea
-          rows={6}
-          value={moment.content}
-          onChange={(e) =>
-            updateMoment(
-              moment.id,
+          <textarea
+            rows={6}
+            value={moment.content || ""}
+            onChange={(e) => updateMoment(moment.id, "content", e.target.value)}
+            placeholder="Tell the story..."
+            className="w-full rounded-xl border border-white/10 bg-white/5 p-5"
+          />
+        </div>
 
-              "content",
+        {/* IMAGE */}
+        <div>
+          <label className="mb-2 block text-sm font-medium text-zinc-300">
+            Memory Photo <span className="text-pink-500">*</span>
+          </label>
 
-              e.target.value,
-            )
-          }
-          placeholder="Tell the story..."
-          className="w-full rounded-xl border border-white/10 bg-white/5 p-5"
-        />
-        <ImageUploader
-          value={moment.image}
-          onChange={(url) => {
-            updateMoment(
-              moment.id,
+          <p className="mb-4 text-sm text-zinc-500">
+            Every memory needs a photo before you can publish your LoveQuest.
+          </p>
 
-              "image",
-
-              url,
-            );
-          }}
-        />
+          <ImageUploader
+            value={moment.image}
+            required
+            onChange={(url) => {
+              updateMoment(moment.id, "image", url);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
