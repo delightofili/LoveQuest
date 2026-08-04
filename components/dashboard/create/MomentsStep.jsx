@@ -97,7 +97,6 @@ export default function MomentsStep({ form, setForm, nextStep, previousStep }) {
 
         <AddMomentButton addMoment={addMoment} />
 
-        {/* Validation error */}
         {error && (
           <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm text-red-400">
             {error}
